@@ -1,54 +1,42 @@
-const fs = require("fs-extra");
-const request = require("request");
-
 module.exports.config = {
- name: "helpall",
- version: "1.0.0",
- hasPermssion: 0,
- credits: "SHAHADAT SAHU",
- description: "Displays all available commands in one page",
- commandCategory: "system",
- usages: "[No args]",
- cooldowns: 5
+  name: "helpall",
+  version: "1.0.0",
+  hasPermssion: 0,
+  credits: "TAWHID ISLAM SIAM",
+  description: "Displays all available commands in one page",
+  commandCategory: "system",
+  usages: "[No args]",
+  cooldowns: 5,
+  usePrefix: true
 };
 
 module.exports.run = async function ({ api, event }) {
- const { commands } = global.client;
- const { threadID, messageID } = event;
+  try {
+    const { commands } = global.client;
+    const { threadID, messageID } = event;
 
- const allCommands = [];
+    const allCommands = [];
 
- for (let [name] of commands) {
- if (name && name.trim() !== "") {
- allCommands.push(name.trim());
- }
- }
+    for (let [name] of commands) {
+      if (name && name.trim() !== "") {
+        allCommands.push(name.trim());
+      }
+    }
 
- allCommands.sort();
+    allCommands.sort();
 
- const finalText = `╔═══❖ 🌟 𝐂𝐎𝐌𝐌𝐀𝐍𝐃 𝐋𝐈𝐒𝐓 🌟 ❖═══╗
+    const finalText = 
+`╔═══❖ 🌟 𝐂𝐎𝐌𝐌𝐀𝐍𝐃 𝐋𝐈𝐒𝐓 🌟 ❖═══╗
 ${allCommands.map(cmd => `║ ➔ ${cmd}`).join("\n")}
 ╠═════🔰 𝐁𝐎𝐓 𝐈𝐍𝐅𝐎 🔰═════╣
-║ 🤖 𝐁𝐨𝐭: ─꯭─⃝‌‌𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐂𝐡𝐚𝐭 𝐁𝐨𝐭
-║ 👑 𝐎𝐰𝐧𝐞𝐫: 𝐒𝐇𝐀𝐇𝐀𝐃𝐀𝐓 𝐒𝐀𝐇𝐔
-║ 📦 𝐂𝐨𝐦𝐦𝐚𝐧𝐝𝐬: ${allCommands.length} 
+║ 🤖 𝐁𝐨𝐭: BRUR Chat Bot
+║ 👨‍💻 𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫: TAWHID ISLAM SIAM
+║ 📦 𝐓𝐨𝐭𝐚𝐥 𝐂𝐨𝐦𝐦𝐚𝐧𝐝𝐬: ${allCommands.length} 
 ╚═══════════════════════╝`;
 
- // 🔹 এখানে আপনার ফটো Imgur লিংক করে বসাবেন ✅
- 
- const backgrounds = [
-    "https://i.imgur.com/gokzyKd.jpeg",
-    "https://i.imgur.com/g3hlQ0Z.jpeg",
-    "https://i.imgur.com/L7txp4M.jpeg",
-    "https://i.imgur.com/5dG8PS5.jpeg"
- ];
- const selectedBg = backgrounds[Math.floor(Math.random() * backgrounds.length)];
- const imgPath = __dirname + "/cache/helpallbg.jpg";
+    return api.sendMessage(finalText, threadID, messageID);
 
- const callback = () =>
- api.sendMessage({ body: finalText, attachment: fs.createReadStream(imgPath) }, threadID, () => fs.unlinkSync(imgPath), messageID);
-
- request(encodeURI(selectedBg))
- .pipe(fs.createWriteStream(imgPath))
- .on("close", () => callback());
+  } catch (err) {
+    return api.sendMessage("❌ Error: " + err.message, event.threadID, event.messageID);
+  }
 };
