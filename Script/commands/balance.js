@@ -1,5 +1,5 @@
 module.exports.config = {
-  name: "bal",
+  name: "balance",
   version: "1.0.0",
   hasPermssion: 0,
   credits: "SHAHADAT SAHU",
