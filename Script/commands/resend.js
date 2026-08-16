@@ -33,7 +33,7 @@ module.exports.handleEvent = async function ({ event, api, Users }) {
 
       if (!msg.attachment || msg.attachment.length === 0) {
         return api.sendMessage(
-          `সবাই দেখেন নাও\n${userName} রিমুভ করেছে:\n${msg.msgBody || ""}`,
+          `সবাই দেখে নাও\n${userName} রিমুভ করেছে:\n${msg.msgBody || ""}`,
           threadID
         );
       }
@@ -52,7 +52,7 @@ module.exports.handleEvent = async function ({ event, api, Users }) {
 
       return api.sendMessage(
         {
-          body: `সবাই দেখেন নাও\n${userName} রিমুভ করেছে:\n${msg.msgBody || ""}`,
+          body: `সবাই দেখে নাও\n${userName} রিমুভ করেছে:\n${msg.msgBody || ""}`,
           attachment: attachmentsList
         },
         threadID
