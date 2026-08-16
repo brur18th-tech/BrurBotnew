@@ -1,156 +1,52 @@
-const fs = require("fs-extra");
-const request = require("request");
-const path = require("path");
-
 module.exports.config = {
-    name: "help",
-    version: "2.0.0",
-    hasPermssion: 0,
-    credits: "SHAHADAT SAHU",
-    description: "Shows all commands with details",
-    commandCategory: "system",
-    usages: "[command name/page number]",
-    cooldowns: 5,
-    envConfig: {
-        autoUnsend: true,
-        delayUnsend: 20
-    }
+  name: "help",
+  version: "4.0.0",
+  hasPermssion: 0,
+  credits: "TAWHID ISLAM SIAM",
+  description: "Shows clean and essential commands list",
+  commandCategory: "system",
+  usages: "help",
+  cooldowns: 2,
+  usePrefix: true
 };
 
-module.exports.languages = {
-    "en": {
-        "moduleInfo": `╭━━━━━━━━━━━━━━━━╮
-┃ ✨ 𝐂𝐎𝐌𝐌𝐀𝐍𝐃 𝐈𝐍𝐅𝐎 ✨
-┣━━━━━━━━━━━┫
-┃ 🔖 Name: %1
-┃ 📄 Usage: %2
-┃ 📜 Description: %3
-┃ 🔑 Permission: %4
-┃ 👨‍💻 Credit: %5
-┃ 📂 Category: %6
-┃ ⏳ Cooldown: %7s
-┣━━━━━━━━━━━━━━━━┫
-┃ ⚙ Prefix: %8
-┃ 🤖 Bot Name: %9
-┃ 👑 Owner: 𝐒𝐇𝐀𝐇𝐀𝐃𝐀𝐓 𝐒𝐀𝐇𝐔
-╰━━━━━━━━━━━━━━━━╯`,
-        "helpList": "[ There are %1 commands. Use: \"%2help commandName\" to view more. ]",
-        "user": "User",
-        "adminGroup": "Admin Group",
-        "adminBot": "Admin Bot"
-    }
-};
+module.exports.run = function ({ api, event }) {
+  const { threadID, messageID } = event;
 
-// 🔹 এখানে আপনার ফটো Imgur লিংক করে বসাবেন ✅
-const helpImages = [
-    "https://i.imgur.com/gokzyKd.jpeg",
-    "https://i.imgur.com/g3hlQ0Z.jpeg",
-    "https://i.imgur.com/L7txp4M.jpeg",
-    "https://i.imgur.com/5dG8PS5.jpeg"
-];
+  const threadSetting = global.data.threadData.get(parseInt(threadID)) || {};
+  const prefix = threadSetting.PREFIX || global.config.PREFIX;
 
+  const helpText = 
+`📜 𝗖𝗢𝗠𝗠𝗔𝗡𝗗 𝗟𝗜𝗦𝗧
 
-function downloadImages(callback) {
-    const randomUrl = helpImages[Math.floor(Math.random() * helpImages.length)];
-    const filePath = path.join(__dirname, "cache", "help_random.jpg");
+🎓 𝗩𝗔𝗥𝗦𝗜𝗧𝗬 & 𝗜𝗡𝗙𝗢
+› routine | nextclass | notice
+› admin | info | uptime | wiki
 
-    request(randomUrl)
-        .pipe(fs.createWriteStream(filePath))
-        .on("close", () => callback([filePath]));
-}
+🧠 𝗔𝗜 & 𝗜𝗠𝗔𝗚𝗘 𝗧𝗢𝗢𝗟𝗦
+› gpt | gemini | prompt | art
+› removebg | font | imgur
 
-module.exports.handleEvent = function ({ api, event, getText }) {
-    const { commands } = global.client;
-    const { threadID, messageID, body } = event;
+🛡️ 𝗔𝗗𝗠𝗜𝗡 & 𝗚𝗥𝗢𝗨𝗣
+› setprefix | boxadmin | kick
+› adduser | antiout | setname
+› unsend | onlyadmin | pending
 
-    if (!body || typeof body === "undefined" || body.indexOf("help") != 0) return;  
-    const splitBody = body.slice(body.indexOf("help")).trim().split(/\s+/);  
-    if (splitBody.length < 2 || !commands.has(splitBody[1].toLowerCase())) return;  
+🎬 𝗠𝗘𝗗𝗜𝗔 & 𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗
+› song | video | mp3
+› autodl | fblink | voice
 
-    const threadSetting = global.data.threadData.get(parseInt(threadID)) || {};  
-    const command = commands.get(splitBody[1].toLowerCase());  
-    const prefix = threadSetting.PREFIX || global.config.PREFIX;  
+👤 𝗨𝗦𝗘𝗥 & 𝗣𝗥𝗢𝗙𝗜𝗟𝗘
+› profile | pp | uid | tid
+› age | birthday | rankup
 
-    const detail = getText("moduleInfo",  
-        command.config.name,  
-        command.config.usages || "Not Provided",  
-        command.config.description || "Not Provided",  
-        command.config.hasPermssion,  
-        command.config.credits || "Unknown",  
-        command.config.commandCategory || "Unknown",  
-        command.config.cooldowns || 0,  
-        prefix,  
-        global.config.BOTNAME || "𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐂𝐡𝐚𝐭 𝐁𝐨𝐭"  
-    );  
+🎮 𝗙𝗨𝗡 & 𝗚𝗔𝗠𝗘𝗦
+› tictactoe | slot | roast
+› baby | say | pair | quiz
 
-    downloadImages(files => {  
-        const attachments = files.map(f => fs.createReadStream(f));  
-        api.sendMessage({ body: detail, attachment: attachments }, threadID, () => {  
-            files.forEach(f => fs.unlinkSync(f));  
-        }, messageID);  
-    });
-};
+⚙️ Prefix: ${prefix}
+🤖 Bot: BRUR Chat Bot
+👨‍💻 Dev: TAWHID ISLAM SIAM`;
 
-module.exports.run = function ({ api, event, args, getText }) {
-    const { commands } = global.client;
-    const { threadID, messageID } = event;
-
-    const threadSetting = global.data.threadData.get(parseInt(threadID)) || {};  
-    const prefix = threadSetting.PREFIX || global.config.PREFIX;  
-
-    if (args[0] && commands.has(args[0].toLowerCase())) {  
-        const command = commands.get(args[0].toLowerCase());  
-
-        const detailText = getText("moduleInfo",  
-            command.config.name,  
-            command.config.usages || "Not Provided",  
-            command.config.description || "Not Provided",  
-            command.config.hasPermssion,  
-            command.config.credits || "Unknown",  
-            command.config.commandCategory || "Unknown",  
-            command.config.cooldowns || 0,  
-            prefix,  
-            global.config.BOTNAME || "𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐂𝐡𝐚𝐭 𝐁𝐨𝐭"  
-        );  
-
-        downloadImages(files => {  
-            const attachments = files.map(f => fs.createReadStream(f));  
-            api.sendMessage({ body: detailText, attachment: attachments }, threadID, () => {  
-                files.forEach(f => fs.unlinkSync(f));  
-            }, messageID);  
-        });  
-        return;  
-    }  
-
-    const arrayInfo = Array.from(commands.keys())
-        .filter(cmdName => cmdName && cmdName.trim() !== "")
-        .sort();  
-
-    const page = Math.max(parseInt(args[0]) || 1, 1);  
-    const numberOfOnePage = 20;  
-    const totalPages = Math.ceil(arrayInfo.length / numberOfOnePage);  
-    const start = numberOfOnePage * (page - 1);  
-    const helpView = arrayInfo.slice(start, start + numberOfOnePage);  
-
-    let msg = helpView.map(cmdName => `┃ ✪ ${cmdName}`).join("\n");
-
-    const text = `╭━━━━━━━━━━━━━━━━╮
-┃ 📜 𝐂𝐎𝐌𝐌𝐀𝐍𝐃 𝐋𝐈𝐒𝐓 📜
-┣━━━━━━━━━━━━━━━┫
-┃ 📄 Page: ${page}/${totalPages}
-┃ 🧮 Total: ${arrayInfo.length}
-┣━━━━━━━━━━━━━━━━┫
-${msg}
-┣━━━━━━━━━━━━━━━━┫
-┃ ⚙ Prefix: ${prefix}
-┃ 🤖 Bot Name: ${global.config.BOTNAME || "𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐂𝐡𝐚𝐭 𝐁𝐨𝐭"}
-┃ 👑 Owner: 𝐒𝐇𝐀𝐇𝐀𝐃𝐀𝐓 𝐒𝐀𝐇𝐔
-╰━━━━━━━━━━━━━━━━╯`;
-
-    downloadImages(files => {  
-        const attachments = files.map(f => fs.createReadStream(f));  
-        api.sendMessage({ body: text, attachment: attachments }, threadID, () => {  
-            files.forEach(f => fs.unlinkSync(f));  
-        }, messageID);  
-    });  
+  return api.sendMessage(helpText, threadID, messageID);
 };
