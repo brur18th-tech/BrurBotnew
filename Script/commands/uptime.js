@@ -7,7 +7,7 @@ module.exports = {
     name: "uptime",
     version: "2.0.0",
     hasPermssion: 0,
-    credits: "SHAHADAT SAHU",
+    credits: "TAWHID ISLAM SIAM",
     description: "Show advanced system uptime.",
     commandCategory: "system",
     usages: "uptime",
@@ -16,27 +16,31 @@ module.exports = {
   },
 
   run: async function ({ api, event }) {
-    const { threadID } = event;
+    const { threadID, messageID, timestamp } = event;
 
     try {
-      
       const uptimeSec = (new Date() - startTime) / 1000;
       const days = Math.floor(uptimeSec / 86400);
       const hours = Math.floor((uptimeSec % 86400) / 3600);
       const minutes = Math.floor((uptimeSec % 3600) / 60);
       const seconds = Math.floor(uptimeSec % 60);
       const uptimeFormatted = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
       const totalMem = os.totalmem() / 1073741824;
       const freeMem = os.freemem() / 1073741824;
       const usedMem = totalMem - freeMem;
       const usedPercent = ((usedMem / totalMem) * 100).toFixed(1);
+
       const cpuModel = os.cpus()[0].model;
       const cpuCount = os.cpus().length;
       const cpuSpeed = os.cpus()[0].speed;
+
       const now = moment.tz("Asia/Dhaka");
       const date = now.format("DD MMMM YYYY");
       const time = now.format("hh:mm:ss A");
-      const ping = Math.floor(Math.random() * 300);
+
+      // রিয়েল লেটেন্সি হিসাব
+      const ping = Date.now() - timestamp;
 
       let pingStatus;
       if (ping < 100) pingStatus = "⚡ Ultra Fast";
@@ -44,13 +48,13 @@ module.exports = {
       else if (ping < 400) pingStatus = "⚠️ Normal";
       else pingStatus = "🐢 Slow";
 
-      
       const status = usedPercent < 70 ? "✅ SYSTEM STABLE" : usedPercent < 90 ? "⚠️ HIGH LOAD" : "⛔ CRITICAL";
-      const finalMsg = `
-╭───〔⚙️ SYSTEM STATUS ⚙️〕───╮
-│ 👑 𝗢𝗪𝗡𝗘𝗥: 𝐒𝐇𝐀𝐇𝐀𝐃𝐀𝐓 𝐒𝐀𝐇𝐔
-│ 🤖 𝗕𝗢𝗧: 𝐒𝐇𝐀𝐇𝐀𝐃𝐀𝐓 𝐒𝐀𝐇𝐔
-│ 🕐 𝗦𝗧𝗔𝗥𝗧 𝗧𝗜𝗠𝗘: ${startTime.toLocaleString()}
+
+      const finalMsg = 
+`╭───〔⚙️ SYSTEM STATUS ⚙️〕───╮
+│ 🤖 𝗕𝗢𝗧: BRUR Chat Bot
+│ 👑 𝗢𝗪𝗡𝗘𝗥: TAWHID ISLAM SIAM
+│ 🕐 𝗦𝗧𝗔𝗥𝗧 𝗧𝗜𝗠𝗘: ${startTime.toLocaleString("en-US", { timeZone: "Asia/Dhaka" })}
 │ ⏰ 𝗨𝗣𝗧𝗜𝗠𝗘: ${uptimeFormatted}
 ├───────────────────────
 │ 💻 𝗢𝗦: ${os.type()} ${os.arch()}
@@ -64,14 +68,13 @@ module.exports = {
 │ ⏰ 𝗧𝗜𝗠𝗘: ${time}
 │ 📡 𝗣𝗜𝗡𝗚: ${ping}ms (${pingStatus})
 │ 🧭 𝗦𝗧𝗔𝗧𝗨𝗦: ${status}
-╰───────────────────────
-`;
+╰───────────────────────╯`;
 
-      await api.sendMessage(finalMsg, threadID);
+      await api.sendMessage(finalMsg, threadID, messageID);
 
     } catch (error) {
       console.error("Uptime command error:", error);
-      await api.sendMessage("call admin sahu", event.threadID);
+      await api.sendMessage("❌ Uptime Error: " + error.message, event.threadID, event.messageID);
     }
   }
 };
