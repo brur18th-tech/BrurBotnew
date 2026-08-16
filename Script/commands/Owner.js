@@ -1,64 +1,40 @@
+const axios = require("axios");
 const request = require("request");
 const fs = require("fs-extra");
+const moment = require("moment-timezone");
 
 module.exports.config = {
-  name: "owner",
-  version: "1.0.1",
-  hasPermssion: 0,
-  credits: "SHAHADAT SAHU",
-  description: "Show Owner Info with styled box & random photo",
-  commandCategory: "Information",
-  usages: "owner",
-  cooldowns: 2
+ name: "admin",
+ version: "1.0.0",
+ hasPermssion: 0,
+ credits: "SHAHADAT SAHU",
+ description: "Show Owner Info",
+ commandCategory: "info",
+ usages: "admin",
+ cooldowns: 2
 };
 
-module.exports.run = async function ({ api, event }) {
+module.exports.run = async function({ api, event }) {
+ const time = moment().tz("Asia/Dhaka").format("DD/MM/YYYY hh:mm:ss A");
 
-  
-  const info = `
-╔═════════════════════ ✿
-║ ✨ 𝗢𝗪𝗡𝗘𝗥 𝗜𝗡𝗙𝗢 ✨
-╠═════════════════════ ✿
-║ 👑 𝗡𝗮𝗺𝗲 : 𝗦𝗛𝗔𝗛𝗔𝗗𝗔𝗧 𝗦𝗔𝗛𝗨
-║ 🧸 𝗡𝗶𝗰𝗸 𝗡𝗮𝗺𝗲 : 𝗦𝗔𝗛𝗨
-║ 🎂 𝗔𝗴𝗲 : 𝟭𝟴+
-║ 💘 𝗥𝗲𝗹𝗮𝘁𝗶𝗼𝗻 : 𝗦𝗶𝗻𝗴𝗹𝗲
-║ 🎓 𝗣𝗿𝗼𝗳𝗲𝘀𝘀𝗶𝗼𝗻 : 𝗦𝘁𝘂𝗱𝗲𝗻𝘁
-║ 📚 𝗘𝗱𝘂𝗰𝗮𝘁𝗶𝗼𝗻 : 𝗛𝗦𝗖
-║ 🏡 𝗔𝗱𝗱𝗿𝗲𝘀𝘀 : 𝗞𝗵𝗮𝗴𝗿𝗮𝗰𝗵𝗮𝗿𝗶
-╠═════════════════════ ✿
-║ 🔗 𝗖𝗢𝗡𝗧𝗔𝗖𝗧 𝗟𝗜𝗡𝗞𝗦
-╠═════════════════════ ✿
-║ 📘 𝗙𝗮𝗰𝗲𝗯𝗼𝗼𝗸 :
-║ fb.com/100044713412032
-║ 💬 𝗠𝗲𝘀𝘀𝗲𝗻𝗴𝗲𝗿 :
-║ m.me/100044713412032
-║ 📞 𝗪𝗵𝗮𝘁𝘀𝗔𝗽𝗽 :
-║ wa.me/01882333052
-║ ✈️ 𝗧𝗲𝗹𝗲𝗴𝗿𝗮𝗺 :
-║ t.me/yoursahu
-╚═════════════════════ ✿
-`;
+ const callback = () => api.sendMessage({
+ body: `
+┌───────────────⭓
+│ 𝗢𝗪𝗡𝗘𝗥 𝗗𝗘𝗧𝗔𝗜𝗟𝗦
+├───────────────
+│👤 𝐍𝐚𝐦𝐞 : TAWHID ISLAM SIAM
+└───────────────⭓
 
-  const images = [
-    "https://i.imgur.com/gokzyKd.jpeg",
-    "https://i.imgur.com/g3hlQ0Z.jpeg",
-    "https://i.imgur.com/L7txp4M.jpeg",
-    "https://i.imgur.com/5dG8PS5.jpeg"
-  ];
+┌───────────────⭓
+│ 🕒 𝗨𝗽𝗱𝗮𝘁𝗲𝗱 𝗧𝗶𝗺𝗲
+├───────────────
+│ ${time}
+└───────────────⭓
+ `,
+ attachment: fs.createReadStream(__dirname + "/cache/owner.jpg")
+ }, event.threadID, () => fs.unlinkSync(__dirname + "/cache/owner.jpg"));
 
-  const randomImg = images[Math.floor(Math.random() * images.length)];
-
-  const callback = () => api.sendMessage(
-    {
-      body: info,
-      attachment: fs.createReadStream(__dirname + "/cache/owner.jpg")
-    },
-    event.threadID,
-    () => fs.unlinkSync(__dirname + "/cache/owner.jpg")
-  );
-
-  return request(encodeURI(randomImg))
-    .pipe(fs.createWriteStream(__dirname + "/cache/owner.jpg"))
-    .on("close", () => callback());
+ return request("https://i.ibb.co/8Dmx6tSt/b44cdcfce5.jpg") //এখানে আপনার ছবির Imgur link বসাবেন✅
+ .pipe(fs.createWriteStream(__dirname + '/cache/owner.jpg'))
+ .on('close', () => callback());
 };
