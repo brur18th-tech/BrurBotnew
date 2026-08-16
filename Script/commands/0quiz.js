@@ -3,88 +3,311 @@ const path = require("path");
 
 module.exports.config = {
   name: "quiz",
-  version: "1.2.0",
+  version: "1.1.0",
   hasPermssion: 0,
-  credits: "English Literature Bot",
-  description: "Test your knowledge with randomized English Literature Quizzes",
+  credits: "TAWHID ISLAM SIAM",
+  description: "English Literature Quiz",
   commandCategory: "Education",
-  usages: "/quiz",
+  usages: "quiz",
   cooldowns: 3,
   usePrefix: true
 };
 
-// গ্লোবাল হিস্ট্রি অ্যারেই (যাতে ব্যবহৃত প্রশ্ন সেভ থাকে)
-if (!global.quizHistory) {
-  global.quizHistory = {};
+// ======================================================
+// QUIZ FILE PATH
+// ======================================================
+
+const QUIZ_FILE = path.join(__dirname, "cache", "quiz.json");
+
+// ======================================================
+// ASKED QUESTIONS
+// ======================================================
+
+const askedQuestions = new Set();
+
+// ======================================================
+// LOAD QUESTIONS FROM JSON
+// ======================================================
+
+function loadQuestions() {
+
+  // Check file
+  if (!fs.existsSync(QUIZ_FILE)) {
+
+    throw new Error(
+      "quiz.json file not found!\n\n" +
+      "Expected location:\n" +
+      QUIZ_FILE
+    );
+  }
+
+  try {
+
+    const data = fs.readFileSync(
+      QUIZ_FILE,
+      "utf8"
+    );
+
+    const questions = JSON.parse(data);
+
+    if (!Array.isArray(questions)) {
+      throw new Error(
+        "quiz.json must contain an array of questions."
+      );
+    }
+
+    if (questions.length === 0) {
+      throw new Error(
+        "quiz.json is empty."
+      );
+    }
+
+    return questions;
+
+  } catch (err) {
+
+    throw new Error(
+      "Unable to read quiz.json:\n" +
+      err.message
+    );
+  }
 }
 
-module.exports.run = async function ({ api, event }) {
+// ======================================================
+// RANDOM QUESTION
+// ======================================================
+
+function getRandomQuestion() {
+
+  const questions = loadQuestions();
+
+  // সব প্রশ্ন একবার হয়ে গেলে নতুন cycle
+  if (askedQuestions.size >= questions.length) {
+    askedQuestions.clear();
+  }
+
+  // এখনো যেসব প্রশ্ন আসেনি
+  const availableQuestions = questions
+    .map((question, index) => ({
+      question,
+      index
+    }))
+    .filter(
+      item => !askedQuestions.has(item.index)
+    );
+
+  // Random question
+  const selected =
+    availableQuestions[
+      Math.floor(
+        Math.random() * availableQuestions.length
+      )
+    ];
+
+  // Remember question
+  askedQuestions.add(selected.index);
+
+  return selected.question;
+}
+
+// ======================================================
+// NORMALIZE ANSWER
+// ======================================================
+
+function normalizeAnswer(answer) {
+
+  if (!answer) return "";
+
+  return answer
+    .trim()
+    .toUpperCase()
+    .replace(/[).:]/g, "");
+}
+
+// ======================================================
+// /QUIZ COMMAND
+// ======================================================
+
+module.exports.run = async function ({
+  api,
+  event
+}) {
+
   try {
-    const jsonPath = path.join(__dirname, "cache", "quiz.json");
 
-    if (!fs.existsSync(jsonPath)) {
-      return api.sendMessage("❌ quiz.json file not found in cache folder!", event.threadID, event.messageID);
+    const quiz = getRandomQuestion();
+
+    // Validate question
+    if (
+      !quiz.question ||
+      !Array.isArray(quiz.options) ||
+      quiz.options.length !== 4 ||
+      !quiz.answer
+    ) {
+
+      return api.sendMessage(
+        "Quiz Error!\n\n" +
+        "The question format in quiz.json is incorrect.",
+        event.threadID,
+        event.messageID
+      );
     }
 
-    const quizData = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
+    // ==================================================
+    // QUESTION MESSAGE
+    // ==================================================
 
-    if (!quizData || quizData.length === 0) {
-      return api.sendMessage("❌ No questions found in quiz.json file!", event.threadID, event.messageID);
-    }
+    const message =
+      "╭─────────────────╮\n" +
+      "   ENGLISH LITERATURE QUIZ\n" +
+      "╰─────────────────╯\n\n" +
 
-    const threadID = event.threadID;
-    if (!global.quizHistory[threadID]) {
-      global.quizHistory[threadID] = [];
-    }
+      "Question:\n" +
+      quiz.question +
+      "\n\n" +
 
-    // অলরেডি ইউজ করা হয়ে যাওয়া প্রশ্নগুলো ফিল্টার করে বাদ দেওয়া
-    let availableQuizzes = quizData.filter((_, index) => !global.quizHistory[threadID].includes(index));
+      quiz.options[0] + "\n" +
+      quiz.options[1] + "\n" +
+      quiz.options[2] + "\n" +
+      quiz.options[3] +
+      "\n\n" +
 
-    // যদি গ্রুপের সব প্রশ্ন একবার দেখানো হয়ে যায়, তবে হিস্ট্রি রিসেট হবে
-    if (availableQuizzes.length === 0) {
-      global.quizHistory[threadID] = [];
-      availableQuizzes = quizData;
-    }
+      "Reply to this message with:\n" +
+      "A, B, C or D";
 
-    // এলোমেলো প্রশ্ন পাওয়ার জন্য Fisher-Yates Shuffle
-    const randomIndex = Math.floor(Math.random() * availableQuizzes.length);
-    const randomQuiz = availableQuizzes[randomIndex];
+    return api.sendMessage(
+      message,
+      event.threadID,
+      (err, info) => {
 
-    // আসল ডাটাবেজের ইনডেক্স খুঁজে বের করে হিস্ট্রিতে সেভ করা
-    const originalIndex = quizData.findIndex(q => q.question === randomQuiz.question);
-    global.quizHistory[threadID].push(originalIndex);
+        if (err) return;
 
-    const msgText = `📚 𝐄𝐍𝐆𝐋𝐈𝐒𝐇 𝐋𝐈𝐓𝐄𝐑𝐀𝐓𝐔𝐑𝐄 𝐐𝐔𝐈𝐙 📚\n\n` +
-      `❓ ${randomQuiz.question}\n\n` +
-      `${randomQuiz.options.join("\n")}\n\n` +
-      `👉 Reply with A, B, C, or D!`;
+        // Save reply information
+        global.client.handleReply.push({
 
-    return api.sendMessage(msgText, event.threadID, (err, info) => {
-      if (err) return;
-      global.client.handleReply.push({
-        name: this.config.name,
-        messageID: info.messageID,
-        author: event.senderID,
-        correctAnswer: randomQuiz.answer
-      });
-    }, event.messageID);
+          name: this.config.name,
 
-  } catch (error) {
-    return api.sendMessage(`❌ Error loading quiz: ${error.message}`, event.threadID, event.messageID);
+          messageID: info.messageID,
+
+          answer: quiz.answer,
+
+          answered: false
+
+        });
+
+      },
+      event.messageID
+    );
+
+  } catch (err) {
+
+    return api.sendMessage(
+      "❌ Quiz Error\n\n" +
+      err.message,
+      event.threadID,
+      event.messageID
+    );
   }
 };
 
-module.exports.handleReply = async function ({ api, event, handleReply }) {
-  const userAnswer = event.body.trim().toUpperCase();
+// ======================================================
+// HANDLE ANSWER REPLY
+// ======================================================
 
-  if (!["A", "B", "C", "D"].includes(userAnswer)) {
-    return api.sendMessage("⚠️ Invalid option! Please reply with only A, B, C, or D.", event.threadID, event.messageID);
-  }
+module.exports.handleReply = async function ({
+  api,
+  event,
+  handleReply
+}) {
 
-  if (userAnswer === handleReply.correctAnswer) {
-    return api.sendMessage(`🎉 Correct Answer! Excellent job! ✨`, event.threadID, event.messageID);
-  } else {
-    return api.sendMessage(`❌ Wrong Answer!\nThe correct answer was: [ ${handleReply.correctAnswer} ]`, event.threadID, event.messageID);
+  try {
+
+    // ==================================================
+    // ALREADY ANSWERED
+    // ==================================================
+
+    if (handleReply.answered) {
+
+      return api.sendMessage(
+        "⚠️ এই প্রশ্নটির উত্তর ইতোমধ্যে দেওয়া হয়েছে।\n\n" +
+        "নতুন প্রশ্নের জন্য /quiz লিখুন।",
+        event.threadID,
+        event.messageID
+      );
+    }
+
+    // ==================================================
+    // USER ANSWER
+    // ==================================================
+
+    const userAnswer =
+      normalizeAnswer(event.body);
+
+    // ==================================================
+    // ONLY A B C D
+    // ==================================================
+
+    if (
+      userAnswer !== "A" &&
+      userAnswer !== "B" &&
+      userAnswer !== "C" &&
+      userAnswer !== "D"
+    ) {
+
+      return api.sendMessage(
+        "⚠️ শুধু A, B, C অথবা D লিখে উত্তর দিন।",
+        event.threadID,
+        event.messageID
+      );
+    }
+
+    // Lock the question
+    handleReply.answered = true;
+
+    const correctAnswer =
+      normalizeAnswer(handleReply.answer);
+
+    // ==================================================
+    // CORRECT
+    // ==================================================
+
+    if (userAnswer === correctAnswer) {
+
+      return api.sendMessage(
+        "✅ CORRECT!\n\n" +
+        "আপনার উত্তর: " +
+        userAnswer +
+        "\n\n" +
+        "অভিনন্দন! আপনার উত্তর সঠিক।",
+        event.threadID,
+        event.messageID
+      );
+    }
+
+    // ==================================================
+    // WRONG
+    // ==================================================
+
+    return api.sendMessage(
+      "❌ WRONG!\n\n" +
+      "আপনার উত্তর: " +
+      userAnswer +
+      "\n" +
+      "সঠিক উত্তর: " +
+      correctAnswer +
+      "\n\n" +
+      "পরের প্রশ্নের জন্য /quiz লিখুন।",
+      event.threadID,
+      event.messageID
+    );
+
+  } catch (err) {
+
+    return api.sendMessage(
+      "❌ Quiz Error:\n" +
+      (err.message || "Failed to check answer."),
+      event.threadID,
+      event.messageID
+    );
   }
 };
-      
