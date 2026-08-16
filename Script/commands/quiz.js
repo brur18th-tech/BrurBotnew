@@ -5,7 +5,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const CONFIG_URL = "https://gitlab.com/shahadat-sahu/sahu-api/-/raw/main/API.json";
 
 module.exports.config = {
-  name: "quiz",
+  name: "qz",
   version: "1.0.0",
   hasPermssion: 0,
   credits: "SHAHADAT SAHU",
