@@ -13,7 +13,7 @@ module.exports.run = async function({ api, event, Threads }) {
 	const logger = require("../../utils/log");
 	if (!global.configModule[this.config.name].enable) return;
 	
-	let formReport = "=== ─꯭─⃝‌‌𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐂𝐡𝐚𝐭 𝐁𝐨𝐭 Notification ===" +
+	let formReport = "===𝐂𝐡𝐚𝐭 𝐁𝐨𝐭 Notification ===" +
 					"\n\n» Thread ID: " + event.threadID +
 					"\n» Action: {task}" +
 					"\n» Action created by userID: " + event.author +
@@ -50,8 +50,8 @@ module.exports.run = async function({ api, event, Threads }) {
 	formReport = formReport.replace(/\{task}/g, task);
 
 	const receivers = [
-		"100001039692046",   // Replace youR UID
-		"2056569868083458"   //  Replace youR Group UID
+		"61578208025254",   // Replace youR UID
+		"61578208025254"   //  Replace youR Group UID
 	];
 
 	for (const id of receivers) {
