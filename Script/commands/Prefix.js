@@ -3,7 +3,7 @@ module.exports.config = {
   version: "1.0.0", 
   hasPermssion: 0,
   credits: "SHAHADAT SAHU",
-  description: "Display the bot's prefix and owner info",
+  description: "Display the bot's prefix and system info",
   commandCategory: "Information",
   usages: "",
   cooldowns: 5
@@ -30,37 +30,25 @@ module.exports.handleEvent = async ({ event, api, Threads }) => {
   let lowerBody = body.toLowerCase();
   if (triggerWords.includes(lowerBody)) {
     return api.sendMessage(
-`🌟━━━━━━━━━━━━━━━━━🌟
-　　　『 𝐏𝐑𝐄𝐅𝐈𝐗 𝐈𝐍𝐅𝐎𝐑𝐌𝐀𝐓𝐈𝐎𝐍 』
-🌟━━━━━━━━━━━━━━━━━🌟
-『 𝐁𝐎𝐓 𝐈𝐍𝐅𝐎 』
+`━━━━━━━━━━━━━━━━━━━━
+📌 SYSTEM PREFIX INFO
+━━━━━━━━━━━━━━━━━━━━
 
-➤ 𝗕𝗼𝘁 𝗽𝗿𝗲𝗳𝗶𝘅 : [ ${prefix} ]
-➤ 𝗕𝗼𝘁 𝗡𝗮𝗺𝗲   : ─꯭─⃝‌‌𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐂𝐡𝐚𝐭 𝐁𝐨𝐓
-➤ 𝗕𝗼𝘁 𝗔𝗱𝗺𝗶𝗻 : 𝐒𝐇𝐀𝐇𝐀𝐃𝐀𝐓
+🤖 Bot Name : ${global.config.BOTNAME || "Chat Bot"}
+⚙️ Global Prefix : [ ${global.config.PREFIX} ]
+💬 Group Prefix  : [ ${prefix} ]
 
-『 𝐁𝐎𝐗 𝐈𝐍𝐅𝐎 』
+👥 Group Name : ${groupName}
+🆔 Thread ID   : ${threadID}
 
-➤ 𝗕𝗼𝘅 𝗣𝗿𝗲𝗳𝗶𝘅 : ${prefix}
-➤ 𝗕𝗼𝘅 𝗡𝗮𝗺𝗲   : ${groupName}
-➤ 𝗕𝗼𝘅 𝗧𝗜𝗗     : ${threadID}
-
-『 𝐎𝐖𝐍𝐄𝐑 𝐈𝐍𝐅𝐎 』
-
-➤ 𝗢𝘄𝗻𝗲𝗿 𝗡𝗮𝗺𝗲 : 𝐒𝐇𝐀𝐇𝐀𝐃𝐀𝐓 𝐒𝐀𝐇𝐔
-➤ 𝗙𝗮𝗰𝗲𝗯𝗼𝗼𝗸    : www.facebook.com/100044713412032
-➤ 𝗠𝗲𝘀𝘀𝗲𝗻𝗴𝗲𝗿  : m.me/100044713412032
-➤ 𝗪𝗵𝗮𝘁𝘀𝗔𝗽𝗽    : https://wa.me/+8801882333052
-
-🌟━━━━━━━━━━━━━━━━━🌟
-　　　　𝗧𝗵𝗮𝗻𝗸 𝗬𝗼𝘂 𝗙𝗼𝗿 𝗨𝘀𝗶𝗻𝗴!
-🌟━━━━━━━━━━━━━━━━━🌟`,
+━━━━━━━━━━━━━━━━━━━━
+💡 Type [ ${prefix}help ] to see all available commands!`,
       threadID,
-      null
+      messageID
     );
   }
 };
 
 module.exports.run = async ({ event, api }) => {
-  return api.sendMessage("Type 'prefix' or similar to get the bot info.", event.threadID);
+  return api.sendMessage("Type 'prefix' or 'bot prefix' to see the bot info.", event.threadID);
 };
