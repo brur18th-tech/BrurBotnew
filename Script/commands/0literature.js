@@ -2,7 +2,7 @@ const fs = require("fs-extra");
 const path = require("path");
 
 module.exports.config = {
-  name: "quiz2",
+  name: "literature",
   version: "1.2.0",
   hasPermssion: 0,
   credits: "English Literature Bot",
