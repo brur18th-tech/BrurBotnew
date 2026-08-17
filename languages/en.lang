@@ -24,11 +24,11 @@ Main.finishLoadModule=Installed %1 module commands and %2 module events successf
 Main.foundPathAppstate=Sahuhstate successfully
 Main.notFoundPathAppstate=Error can't find appstate file maybe file is malformed!
 Main.checkListGban=Checking global ban list...
-Main.banDevice=Your device have been banned from SA HU, please contact to facebook m.me/61575698041722 to know more information or asking for unban key, if you already have unban key, please fill it below.
+Main.banDevice=Your device have been banned from SA HU, please contact to TAWHID to know more information or asking for unban key, if you already have unban key, please fill it below.
 Main.keyNotSameFormat=Wrong format, code must contain 6 number.
 Main.codeInputExpired=Your code is wrong or out of date.
 Main.unbanDeviceSuccess=Your device are unban now, please restart to use.
-Main.userBanned=You had been banned from sahu when %1 with reason: %2. Please contact to facebook m.me/61575698041722 to have more information!
+Main.userBanned=You had been banned from sahu when %1 with reason: %2. Please contact to TAWHID to have more information!
 Main.finishCheckListGban=Checked global ban list
 Main.handleListenError=handleListene has occurred some unexpected errorr, error : %1
 Main.warningSourceCode=DETECTED THAT SOURCE CODE'S STRUCTURE HAD BEEN CHANGED , STOP NOW!
@@ -81,17 +81,17 @@ users.needObject=Have to be an Object
 
 includes/handle/handleCommand.js
 
-handleCommand.userBanned=বক্স এ বেশি আবলামি করার কারণে তুমাকে ব্যান করা হয়েছে..!🚫
-handleCommand.threadBanned=Group Has Been Banned..!⛔️\nPlease Contact Owner SHAHADAT SAHU For Unban ⚠️
-handleCommand.commandNotExist=Assalamu Alaikum 🌸\n\nOops! The command you entered isn't valid ❌\n\nDid you mean ➤ %1 ?\n\nPlease check and try again 🕊️
-handleCommand.commandThreadBanned=Your thread is unable to use command "%1"
-handleCommand.commandUserBanned=You are unable to use command "%1"
-handleCommand.threadNotAllowNSFW=This Commnd Only use Andmin
-handleCommand.cantGetInfoThread=Can't get your thread's info, error: %1
-handleCommand.permssionNotEnough="%1 You Have No Permission! 🚫\nThis Command is Only For Boss Shahadat 😘\n\nছাগল! এই কমান্ডটা তোর জন্য না!\n👑 এইটা শুধুমাত্র আমার বস SHAHADAT SAHU ব্যবহার করতে পারবে!\nতুই এডমিন লেভেলে নাই বুঝলি? 😂
-handleCommand.cantSetMessageReaction=Having some unexpected error at setMessageReaction, error: %1
+handleCommand.userBanned=You have been banned from using the bot due to a policy violation! 🚫
+handleCommand.threadBanned=This group has been banned! ⛔️\nPlease contact the bot owner to request an unban. ⚠️
+handleCommand.commandNotExist=Oops! The command you entered is invalid. ❌\n\nDid you mean ➤ %1 ?\n\nPlease check and try again. 🕊️
+handleCommand.commandThreadBanned=This thread is restricted from using the command "%1".
+handleCommand.commandUserBanned=You are restricted from using the command "%1".
+handleCommand.threadNotAllowNSFW=This command can only be used by administrators.
+handleCommand.cantGetInfoThread=Unable to retrieve thread information. Error: %1
+handleCommand.permssionNotEnough=You do not have permission to use "%1"! 🚫\nThis command is restricted to bot administrators only.
+handleCommand.cantSetMessageReaction=An unexpected error occurred at setMessageReaction. Error: %1
 handleCommand.executeCommand=[ %1 ] Command used: %2 by user: %3 at thread: %4 | Args included: %5 | Processing time: %6ms
-handleCommand.commandError=Having some unexpected error when using command %1, error: %2
+handleCommand.commandError=An unexpected error occurred while executing command %1. Error: %2
 
 includes/handle/handleCommandEvent.js
 
