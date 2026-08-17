@@ -1,6 +1,6 @@
 module.exports.config = {
   name: "tod",
-  version: "1.0.0",
+  version: "1.0.0", 
   hasPermssion: 0,
   credits: "Truth or Dare Bot",
   description: "Play Truth or Dare inside the group without external json",
