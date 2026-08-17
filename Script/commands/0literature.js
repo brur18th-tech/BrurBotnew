@@ -3,7 +3,7 @@ const path = require("path");
 
 module.exports.config = {
   name: "literature",
-  version: "1.2.0",
+  version: "1.2.1",
   hasPermssion: 0,
   credits: "English Literature Bot",
   description: "Test your knowledge with randomized English Literature Quizzes",
@@ -54,9 +54,14 @@ module.exports.run = async function ({ api, event }) {
     const originalIndex = quizData.findIndex(q => q.question === randomQuiz.question);
     global.quizHistory[threadID].push(originalIndex);
 
-    const msgText = `📚 𝐄𝐍𝐆𝐋𝐈𝐒𝐇 𝐋𝐈𝐓𝐄𝐑𝐀𝐓𝐔𝐑𝐄 𝐐𝐔𝐈𝐙 📚\n\n` +
+    // অপশনের 'A)' কে 'A.' ফরম্যাটে রূপান্তর করা
+    const formattedOptions = randomQuiz.options
+      .map(opt => opt.replace(/^([A-Za-z])\)/, "$1."))
+      .join("\n");
+
+    const msgText = `📚 𝐄𝐍𝐆𝐋𝐈𝐒𝐇 𝐋𝐈𝐓𝐄𝐑𝐀𝐓𝐔𝐑𝐄\n\n` +
       `❓ ${randomQuiz.question}\n\n` +
-      `${randomQuiz.options.join("\n")}\n\n` +
+      `${formattedOptions}\n\n` +
       `👉 Reply with A, B, C, or D!`;
 
     return api.sendMessage(msgText, event.threadID, (err, info) => {
